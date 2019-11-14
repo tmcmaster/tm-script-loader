@@ -1,0 +1,41 @@
+{
+    "name": "@wonkytech/tm-script-loader",
+    "version": "0.0.1",
+    "description": "Javascript module for programmatically loading scripts.",
+    "author": "Tim McMaster",
+    "homepage": "https://tmcmaster.github.io/tm-script-loader",
+    "license": "MIT",
+    "repository": "https://github.com/tmcmaster/tm-script-loader",
+    "pika": true,
+    "sideEffects": true,
+    "@pika/pack": {
+        "pipeline": [
+            [
+                "@pika/plugin-standard-pkg"
+            ],
+            [
+                "@pika/plugin-build-node"
+            ],
+            [
+                "@pika/plugin-build-web"
+            ]
+        ]
+    },
+    "scripts": {
+        "build": "pika build",
+        "version": "npm run build",
+        "publish": "pika publish",
+        "demo": "owc-dev-server --open demo",
+        "docs": "http-server docs",
+        "build:docs": "cd docs && npm run build"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@pika/pack": "^0.5.0",
+        "@pika/plugin-build-node": "^0.6.1",
+        "@pika/plugin-build-types": "^0.6.1",
+        "@pika/plugin-build-web": "^0.6.1",
+        "@pika/plugin-standard-pkg": "^0.6.1",
+        "@pika/types": "^0.6.1"
+    }
+}
