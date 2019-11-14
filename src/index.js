@@ -13,7 +13,6 @@ function loadScripts(scripts) {
 }
 
 function _loadScripts(scripts) {
-    // noinspection DuplicatedCode
     return new Promise((resolve,reject) => {
         Promise.all(scripts.load.map((script) => new Promise((resolve,reject) => {
             console.log('Loading script: ' + script);
@@ -51,7 +50,7 @@ function loadLink(link) {
     newLink.setAttribute("rel", "stylesheet");
     newLink.setAttribute("href", link);
     newLink.onload = (event) => {
-        console.log('Script has been loaded: ' + link);
+        console.log('Script has been loaded successfully: ' + link);
     };
     newLink.onerror = (error) => {
         console.error(`There was an issue loading link(${link}):`, error);

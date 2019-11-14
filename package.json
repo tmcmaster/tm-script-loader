@@ -29,13 +29,16 @@
         "docs": "http-server docs",
         "build:docs": "cd docs && npm run build"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@wonkytech/tm-script-loader": "^0.0.3"
+    },
     "devDependencies": {
         "@pika/pack": "^0.5.0",
         "@pika/plugin-build-node": "^0.6.1",
         "@pika/plugin-build-types": "^0.6.1",
         "@pika/plugin-build-web": "^0.6.1",
         "@pika/plugin-standard-pkg": "^0.6.1",
-        "@pika/types": "^0.6.1"
+        "@pika/types": "^0.6.1",
+        "owc-dev-server": "^0.3.0"
     }
 }

@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@wonkytech/tm-script-loader": "./@wonkytech/tm-script-loader.js"
+  }
+}

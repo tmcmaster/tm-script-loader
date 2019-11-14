@@ -1,2 +1,3 @@
-import '../src/index.js';
-import '../docs/main.js';
+import {loadLink} from "../src/index.js";
+
+loadLink('test.css');

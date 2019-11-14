@@ -1,2 +1,3 @@
-import './web_modules/@wonkytech/tm-script-loader.js';
-import './main.js';
+import {loadLink} from "./web_modules/@wonkytech/tm-script-loader.js";
+
+loadLink('test.css');
