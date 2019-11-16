@@ -32,7 +32,9 @@
         "docs:open": "http-server --open docs"
     },
     "dependencies": {
-        "@wonkytech/tm-script-loader": "^0.0.4"
+        "lit-html": "^1.0.0",
+        "@wonkytech/tm-console-view": "^0.0.3",
+        "@wonkytech/tm-script-loader": "^0.0.5"
     },
     "devDependencies": {
         "@pika/pack": "^0.5.0",
