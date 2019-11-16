@@ -1,3 +1,4 @@
-import {loadLink} from "./web_modules/@wonkytech/tm-script-loader.js";
+import {runTest} from "./main.js";
+import {loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN} from "./web_modules/@wonkytech/tm-script-loader.js";
 
-loadLink('test.css');
+runTest(loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN);

@@ -25,12 +25,14 @@
         "build": "pika build",
         "version": "npm run build",
         "publish": "pika publish",
-        "demo": "owc-dev-server --open demo",
+        "demo": "owc-dev-server",
+        "demo:open": "owc-dev-server --open demo",
+        "build:docs": "npm install && npx @pika/web --dest docs/web_modules",
         "docs": "http-server docs",
-        "build:docs": "cd docs && npm run build"
+        "docs:open": "http-server --open docs"
     },
     "dependencies": {
-        "@wonkytech/tm-script-loader": "^0.0.3"
+        "@wonkytech/tm-script-loader": "^0.0.4"
     },
     "devDependencies": {
         "@pika/pack": "^0.5.0",

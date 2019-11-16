@@ -1,11 +1,12 @@
 function loadScripts(scripts) {
-    if (_haveScriptsLoaded(scripts.payload())) {
-        return new Promise((resolve, reject) => {
-            resolve(scripts.payload());
-        });
-    } else {
-        return _loadScripts(scripts);
-    }
+    return _loadScripts(scripts);
+    // if (_haveScriptsLoaded(scripts.payload())) {
+    //     return new Promise((resolve, reject) => {
+    //         resolve(scripts.payload());
+    //     });
+    // } else {
+    //     return _loadScripts(scripts);
+    // }
 }
 
 function _haveScriptsLoaded(payload) {
@@ -20,21 +21,7 @@ function _haveScriptsLoaded(payload) {
 
 function _loadScripts(scripts) {
     return new Promise((resolve,reject) => {
-        Promise.all(scripts.load.map((script) => new Promise((resolve,reject) => {
-            console.log('Loading script: ' + script);
-            let newScript = document.createElement("script");
-            newScript.setAttribute("defer", "defer");
-            newScript.onload = (event) => {
-                console.log('Script has been loaded: ' + script);
-                resolve();
-            };
-            newScript.onerror = (error) => {
-                console.error(`There was an issue loading script: url(${script}):`, error);
-                reject(error)
-            };
-            document.getElementsByTagName('head')[0].append(newScript);
-            newScript.src = script.toString();
-        }))).then(() => {
+        Promise.all(scripts.load.map((script) => _loadScript(script))).then(() => {
             if (scripts.then === undefined) {
                 resolve((scripts.payload ? scripts.payload() : undefined));
             } else {
@@ -48,6 +35,78 @@ function _loadScripts(scripts) {
             reject();
         });
     });
+}
+
+function _getScriptByName(scriptSrc) {
+    let scripts = document.head.getElementsByTagName("script");
+    for ( let i = 0; i < scripts.length; i++) {
+        if (scripts[i].TMScriptLoader !== undefined && scripts[i].TMScriptLoader.src === scriptSrc) {
+            return scripts[i];
+        }
+    }
+    return undefined;
+}
+
+function _loadScript(script) {
+    console.log('Checking script exists: ' + script);
+    const scriptElement = _getScriptByName(script);
+    if (scriptElement === undefined) {
+        return new Promise((resolve,reject) => {
+            console.log('Loading script: ' + script);
+            let newScript = document.createElement("script");
+            newScript.defer = true;
+            newScript.status = 'loading';
+            newScript.TMScriptLoader = {
+                src: script,
+                status: 'loading'
+            };
+            newScript.onload = (event) => {
+                console.log('Script has been loaded: ' + script);
+                newScript.TMScriptLoader.status = 'loaded';
+                resolve();
+            };
+            newScript.onerror = (error) => {
+                console.error(`There was an issue loading script: url(${script}):`, error);
+                newScript.TMScriptLoader.status = 'failed';
+                reject(error)
+            };
+            document.getElementsByTagName('head')[0].append(newScript);
+            newScript.src = script.toString();
+        })
+    } else {
+        const scriptStatus = (scriptElement.TMScriptLoader ? scriptElement.TMScriptLoader.status : undefined);
+        if (scriptStatus === 'loaded') {
+            console.log('Script was already loaded:' + script);
+            return new Promise((resolve, reject) => {
+                resolve();
+            });
+        } else if (scriptStatus === 'loading') {
+            console.log('Script had already started loading:' + script);
+            return new Promise((resolve, reject) => {
+                scriptElement.addEventListener('load', () => {
+                    resolve();
+                }, (e) => {
+                    reject(e);
+                });
+            });
+        } else {
+            console.warn('Script is already there, but unknown status:' + script);
+            return new Promise((resolve, reject) => {
+                let counter = 10;
+                const interval = setTimeout(() => {
+                    const scriptStatus = (scriptElement.TMScriptLoader ? scriptElement.TMScriptLoader.status : undefined);
+                    if (scriptStatus === 'loaded') {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                    if (--counter < 1) {
+                        clearInterval(interval);
+                        reject(new Error("Script took to long to load."));
+                    }
+                }, 500);
+            });
+        }
+    }
 }
 
 // TODO: need to add logic to test if the link has already been added.
@@ -107,15 +166,18 @@ function loadTokBoxCDN() {
     });
 }
 
-function loadModule(moduleName, functionNames) {
-    return new Promise((resolve, reject) => {
-        import(moduleName).then(module => {
-            const loadModules = functionNames.map(name => module[name]);
-            console.log('Module has loaded.', loadModules);
-            resolve(loadModules);
-        })
-    });
+// function loadModule(moduleName, functionNames) {
+//     return new Promise((resolve, reject) => {
+//         import(moduleName).then(module => {
+//             const loadModules = functionNames.map(name => module[name]);
+//             console.log('Module has loaded.', loadModules);
+//             resolve(loadModules);
+//         })
+//     });
+//
+// }
+
+function _loadNamedSetOfScripts() {
 
 }
-
-export {loadScripts, loadLink, loadFirebaseEmbedded, loadFirebaseCDN, loadTokBoxCDN, loadModule};
+export {loadScripts, loadLink, loadFirebaseEmbedded, loadFirebaseCDN, loadTokBoxCDN};
