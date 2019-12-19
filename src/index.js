@@ -1,22 +1,5 @@
 function loadScripts(scripts) {
     return _loadScripts(scripts);
-    // if (_haveScriptsLoaded(scripts.payload())) {
-    //     return new Promise((resolve, reject) => {
-    //         resolve(scripts.payload());
-    //     });
-    // } else {
-    //     return _loadScripts(scripts);
-    // }
-}
-
-function _haveScriptsLoaded(payload) {
-    if (payload === undefined || payload === null) {
-        return false;
-    } else if (Array.isArray(payload)) {
-        let numberUnfinished = payload.filter(item => item === undefined || item === null)
-            .reduce((a) => a + 1, 0);
-        return (numberUnfinished === 0);
-    }
 }
 
 function _loadScripts(scripts) {
@@ -127,7 +110,6 @@ function loadFirebaseEmbedded() {
     return _loadScripts({
         load: [
             '/__/firebase/7.2.0/firebase-app.js',
-            '/__/firebase/7.2.3/firebase-analytics.js',
             '/__/firebase/7.2.0/firebase-auth.js'
         ], then: {
             load: [

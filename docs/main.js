@@ -1,5 +1,5 @@
 
-export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN) {
+export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN, loadFirebaseEmbedded) {
 
     render(html`
         <style>
@@ -16,11 +16,13 @@ export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, lo
     `, document.querySelector('body'));
 
 
+
     setTimeout(() => {
         // test loading CSS
         loadLink('resources/test.css');
 
         // test loading some scripts
+        // noinspection DuplicatedCode
         loadScripts({
             load: [
                 'resources/test1.js',
@@ -39,6 +41,7 @@ export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, lo
         // Testing a second bit of code trying to load the same scripts
         setTimeout(() => {
             console.log('====================================');
+            // noinspection DuplicatedCode
             loadScripts({
                 load: [
                     'resources/test1.js',
@@ -64,6 +67,11 @@ export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, lo
         // test loading ToxBox
         loadTokBoxCDN().then((tokbox) => {
             console.log('TokBox has finished loading.', tokbox);
+        });
+
+        // test loading firebase embedded. These should get 404
+        loadFirebaseEmbedded().then((firebase) => {
+            console.log('Firebase has finished loading.', firebase);
         });
     }, 2000);
 
