@@ -27,14 +27,15 @@
         "publish": "pika publish",
         "demo": "owc-dev-server",
         "demo:open": "owc-dev-server --open demo",
-        "build:docs": "npm install && npx @pika/web --dest docs/web_modules",
+        "docs:clear": "rm -rf docs/web_modules",
+        "docs:install": "npm install && npx @pika/web --dest docs/web_modules",
+        "docs:pika": "(cd pika; npm run build)",
+        "build:docs": "npm run docs:clear && npm run docs:install && npm run docs:pika",
         "docs": "http-server docs",
         "docs:open": "http-server --open docs"
     },
     "dependencies": {
-        "lit-html": "^1.0.0",
-        "@wonkytech/tm-console-view": "^0.0.3",
-        "@wonkytech/tm-script-loader": "^0.0.5"
+        "lit-html": "^1.0.0"
     },
     "devDependencies": {
         "@pika/pack": "^0.5.0",
