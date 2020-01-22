@@ -1,3 +1,5 @@
+import {THEMES} from './themes.js';
+
 function loadScripts(scripts) {
     return _loadScripts(scripts);
 }
@@ -159,7 +161,11 @@ function loadTokBoxCDN() {
 //
 // }
 
-function _loadNamedSetOfScripts() {
-
+function loadTheme(name) {
+    let themeName = (name && name in THEMES ? name : 'blue');
+    let newStyle = document.createElement("style");
+    newStyle.innerText = THEMES[themeName];
+    document.getElementsByTagName('head')[0].append(newStyle);
 }
-export {loadScripts, loadLink, loadFirebaseEmbedded, loadFirebaseCDN, loadTokBoxCDN};
+
+export {loadScripts, loadLink, loadFirebaseEmbedded, loadFirebaseCDN, loadTokBoxCDN, loadTheme};
