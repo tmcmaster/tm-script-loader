@@ -168,4 +168,35 @@ function loadTheme(name) {
     document.getElementsByTagName('head')[0].append(newStyle);
 }
 
-export {loadScripts, loadLink, loadFirebaseEmbedded, loadFirebaseCDN, loadTokBoxCDN, loadTheme};
+function waitForFirebase() {
+    return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            reject('Firebase took too long.');
+        }, 10000);
+        if (firebase) {
+            clearTimeout(timeout);
+            resolve(firebase);
+        } else {
+            document.addEventListener('firebase-ready', () => {
+                clearTimeout(timeout);
+                resolve(firebase);
+            });
+        }
+    });
+}
+
+function FirebaseEnabled(parentClass) {
+    return class extends parentClass {
+        constructor() {
+            super();
+            waitForFirebase()
+                .then((firebase) => this.databaseReady(firebase))
+                .catch((error) => console.error('There was an issue getting to Firebase: ' + error));
+        }
+        databaseReady(firebase) {
+            this.db = firebase.database();
+        }
+    }
+}
+
+export { loadFirebaseCDN, loadFirebaseEmbedded, loadLink, loadScripts, loadTheme, loadTokBoxCDN, waitForFirebase, FirebaseEnabled};
