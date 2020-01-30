@@ -1,5 +1,4 @@
-import { m as isTemplatePartActive, p as parts, h as render$1, t as templateCaches, q as marker, o as Template, k as TemplateInstance, r as removeNodes, T as TemplateResult } from '../common/render-93a541dd.js';
-import { html } from '../lit-html.js';
+import { q as isTemplatePartActive, p as parts, k as render$1, t as templateCaches, v as marker, u as Template, T as TemplateInstance, r as removeNodes, m as TemplateResult, h as html } from '../common/lit-html-9957b87e.js';
 
 /**
  * @license
@@ -1342,6 +1341,7 @@ class TmConsoleView extends LitElement {
           <h2>Console Log</h2>
           <div class="buttons">
             <button @click="${this.clearLogs}">clear logs</button>
+            <slot></slot>
           </div>
           <div id="logs"></div>
         `;

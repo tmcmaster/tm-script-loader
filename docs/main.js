@@ -75,5 +75,5 @@ export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, lo
         });
     }, 2000);
 
-
+    // TODO: need to add some tests for waitForFirebase and FirebaseEnabled
 }

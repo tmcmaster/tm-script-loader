@@ -1033,6 +1033,57 @@ const getOptions = (o) => o &&
  * http://polymer.github.io/PATENTS.txt
  */
 /**
+ * Creates Parts when a template is instantiated.
+ */
+class DefaultTemplateProcessor {
+    /**
+     * Create parts for an attribute-position binding, given the event, attribute
+     * name, and string literals.
+     *
+     * @param element The element containing the binding
+     * @param name  The attribute name
+     * @param strings The string literals. There are always at least two strings,
+     *   event for fully-controlled bindings with a single expression.
+     */
+    handleAttributeExpressions(element, name, strings, options) {
+        const prefix = name[0];
+        if (prefix === '.') {
+            const committer = new PropertyCommitter(element, name.slice(1), strings);
+            return committer.parts;
+        }
+        if (prefix === '@') {
+            return [new EventPart(element, name.slice(1), options.eventContext)];
+        }
+        if (prefix === '?') {
+            return [new BooleanAttributePart(element, name.slice(1), strings)];
+        }
+        const committer = new AttributeCommitter(element, name, strings);
+        return committer.parts;
+    }
+    /**
+     * Create parts for a text-position binding.
+     * @param templateFactory
+     */
+    handleTextExpression(options) {
+        return new NodePart(options);
+    }
+}
+const defaultTemplateProcessor = new DefaultTemplateProcessor();
+
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+/**
  * The default TemplateFactory which caches Templates keyed on
  * result.type and result.strings.
  */
@@ -1106,4 +1157,32 @@ const render = (result, container, options) => {
     part.commit();
 };
 
-export { AttributeCommitter as A, BooleanAttributePart as B, EventPart as E, NodePart as N, PropertyCommitter as P, SVGTemplateResult as S, TemplateResult as T, reparentNodes as a, nothing as b, AttributePart as c, directive as d, isIterable as e, isPrimitive as f, PropertyPart as g, render as h, isDirective as i, templateFactory as j, TemplateInstance as k, createMarker as l, isTemplatePartActive as m, noChange as n, Template as o, parts as p, marker as q, removeNodes as r, templateCaches as t };
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+// IMPORTANT: do not change the property name or the assignment expression.
+// This line will be used in regexes to search for lit-html usage.
+// TODO(justinfagnani): inject version number at build time
+(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
+/**
+ * Interprets a template literal as an HTML template that can efficiently
+ * render to and update a container.
+ */
+const html = (strings, ...values) => new TemplateResult(strings, values, 'html', defaultTemplateProcessor);
+/**
+ * Interprets a template literal as an SVG template that can efficiently
+ * render to and update a container.
+ */
+const svg = (strings, ...values) => new SVGTemplateResult(strings, values, 'svg', defaultTemplateProcessor);
+
+export { AttributeCommitter as A, BooleanAttributePart as B, DefaultTemplateProcessor as D, EventPart as E, NodePart as N, PropertyCommitter as P, SVGTemplateResult as S, TemplateInstance as T, directive as a, reparentNodes as b, nothing as c, defaultTemplateProcessor as d, AttributePart as e, isIterable as f, isPrimitive as g, html as h, isDirective as i, PropertyPart as j, render as k, templateFactory as l, TemplateResult as m, noChange as n, createMarker as o, parts as p, isTemplatePartActive as q, removeNodes as r, svg as s, templateCaches as t, Template as u, marker as v };
