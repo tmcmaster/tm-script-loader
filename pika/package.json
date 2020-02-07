@@ -6,6 +6,6 @@
     "dependencies": {
         "lit-html": "^1.0.0",
         "@wonkytech/tm-console-view": "~0.0",
-        "@wonkytech/tm-script-loader": "~0.0"
+        "@wonkytech/tm-script-loader": "~0.1"
     }
 }

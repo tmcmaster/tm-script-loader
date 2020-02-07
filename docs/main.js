@@ -1,5 +1,5 @@
 
-export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN, loadFirebaseEmbedded, waitForDatabase) {
+export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, loadTokBoxCDN, loadFirebaseEmbedded, waitForFirebase) {
 
     render(html`
         <style>
@@ -74,7 +74,7 @@ export function runTest(html, render, loadLink, loadScripts, loadFirebaseCDN, lo
             console.log('Firebase has finished loading.', firebase);
         });
 
-        waitForDatabase().then((firebase) => {
+        waitForFirebase().then((firebase) => {
             console.log('Firebase is ready to use.', firebase);
         });
 

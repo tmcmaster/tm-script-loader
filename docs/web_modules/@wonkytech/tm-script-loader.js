@@ -1,3 +1,36 @@
+const THEMES = {
+  // language=CSS
+  'blue': `
+        html {
+            --dark-primary-color: #303F9F;
+            --default-primary-color: #3F51B5;
+            --light-primary-color: #C5CAE9;
+            --text-primary-color: #FFFFFF;
+            --accent-color: #448AFF;
+            --primary-background-color: #C5CAE9;
+            --primary-text-color: #212121;
+            --secondary-text-color: #757575;
+            --disabled-text-color: #BDBDBD;
+            --divider-color: #BDBDBD;
+        }
+    `,
+  // language=CSS
+  'orange': `
+        html {
+            --dark-primary-color: #F57C00;
+            --default-primary-color: #FF9800;
+            --light-primary-color: #FFE0B2;
+            --text-primary-color: #212121;
+            --accent-color: #FF5722;
+            --primary-background-color: #FFE0B2;
+            --primary-text-color: #212121;
+            --secondary-text-color: #757575;
+            --disabled-text-color: #BDBDBD;
+            --divider-color: #BDBDBD;
+        }
+    `
+};
+
 function loadScripts(scripts) {
   return _loadScripts(scripts);
 }
@@ -148,5 +181,72 @@ function loadTokBoxCDN() {
     payload: () => window.OT
   });
 } // function loadModule(moduleName, functionNames) {
+//     return new Promise((resolve, reject) => {
+//         import(moduleName).then(module => {
+//             const loadModules = functionNames.map(name => module[name]);
+//             console.log('Module has loaded.', loadModules);
+//             resolve(loadModules);
+//         })
+//     });
+//
+// }
 
-export { loadFirebaseCDN, loadFirebaseEmbedded, loadLink, loadScripts, loadTokBoxCDN };
+
+function loadTheme(name) {
+  let themeName = name && name in THEMES ? name : 'blue';
+  let newStyle = document.createElement("style");
+  newStyle.innerText = THEMES[themeName];
+  document.getElementsByTagName('head')[0].append(newStyle);
+}
+
+function waitForFirebase() {
+  return new Promise((resolve, reject) => {
+    if (window.firebase && window.firebase.auth) {
+      resolve(window.firebase);
+    } else {
+      let listener = undefined;
+      let timeout = setTimeout(() => {
+        if (listener) {
+          document.removeEventListener(`firebase-ready`, listener);
+          listener = undefined;
+          timeout = undefined;
+        }
+
+        if (window.firebase && window.firebase.auth) {
+          resolve(window.firebase);
+        } else {
+          reject('Firebase took too long.');
+        }
+      }, 10000);
+
+      listener = () => {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = undefined;
+        }
+
+        document.removeEventListener(`firebase-ready`, listener);
+        listener = undefined;
+        resolve(window.firebase);
+      };
+
+      document.addEventListener('firebase-ready', listener);
+    }
+  });
+}
+
+function FirebaseEnabled(parentClass) {
+  return class extends parentClass {
+    constructor() {
+      super();
+      waitForFirebase().then(firebase => this.databaseReady(firebase)).catch(error => console.error('There was an issue getting to Firebase: ' + error));
+    }
+
+    databaseReady(firebase) {
+      this.db = firebase.database();
+    }
+
+  };
+}
+
+export { FirebaseEnabled, loadFirebaseCDN, loadFirebaseEmbedded, loadLink, loadScripts, loadTheme, loadTokBoxCDN, waitForFirebase };
